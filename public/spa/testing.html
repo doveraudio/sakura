@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="../lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <text id="_token" visible="false" value=""/>
+ 
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Sakura</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li class="dropdown">
+                            <span data-bind="with:user">
+                            <span class="" data-bind="html:name">
+                            </span>
+                            <span class="" data-bind="html:email">
+                            </span>
+                            </span>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Profile</a></li>
+                                <li><a href="#">Inbox</a></li>
+                                <div class="navbar-form navbar-left" name="login">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="email" placeholder="Email">
+                                        <input type="password" class="form-control" id="password" placeholder="Password">
+                                        <button type="submit" id="login" class="btn btn-default">log in</button>
+                                    </div>
+                                </div>
+                                <li><a href="#">Register</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div data-bind="foreach: forums">
+                        <div data-bind="html: title"></div>
+                        <div data-bind="html: description"></div>
+                        <div data-bind="with: user">
+                            <div>Created By:
+                                <span data-bind="html: name"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <div data-bind="with: CurrentTopic">
+                                <div data-bind="html: title"></div>
+                                <div data-bind="html: $index"></div>
+                                <div class="container-fluid">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div class="row" data-bind="foreach: posts">
+                                                <div class="col-sm-10">
+                                                    <div class="col-sm-2 panel panel-default" data-bind="with: user">
+                                                        <strong>Username:</strong>
+                                                        <span data-bind="html: name"></span>
+                                                        <br/>
+                                                        <strong>User ID:</strong>
+                                                        <span data-bind="html: id"></span>
+                                                        <br/>
+                                                        <strong>Index:</strong>
+                                                        <span data-bind="html: $index"></span>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <span data-bind="html: body"></span>
+                                                        <br/>
+                                                        <span data-bind="if: "
+                                                        <a id="editpost" url="#">Edit post</a>
+                                                        <a id="deletepost" url="#">Delete post</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-10">
+                                                    <label>Create New Post</label>
+
+                                                    <textarea id="newpost" ></textarea>
+                                                    <button class="btn btn-success" id="createpost">Create Post</button>
+
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <ul data-bind="foreach: topics">
+                                <li data-bind="html: title"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="../lib/jquery/dist/jquery.js" type="text/javascript"></script>
+        <script src="../lib/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+        <script src="../lib/knockout/dist/knockout.js" type="text/javascript"></script>
+        <script src="../lib/knockout.mapping-master/dist/knockout.mapping.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            var theApp = null;
+
+            $(document).ready(function () {
+                $.ajax({
+                   url:"/token",
+                   type:"get",
+                   success: function(data){
+                       $('#_token').val(data);
+                       console.log("data="+data);
+                       console.log('#_token='+$('#_token').val());
+                   }
+                });
+                var user1 = new User(1, "mikeditka");
+                var user2 = new User(2, "baberuth");
+                var user3 = new User(3, "frankrizzo");
+                var posts1 = [
+                    new Post(1, user1, "i'm eating lots of ham"),
+                    new Post(2, user2, "i'm eating lots of steak"),
+                    new Post(3, user3, "eatin' som chicken pahm")
+                ];
+                var posts2 = [
+                    new Post(4, user1, "i'm playing football"),
+                    new Post(5, user2,  "i'm playing baseball"),
+                    new Post(6, user1,  "i'm playing yahtzee now. i'm winning"),
+                    new Post(7, user3,  "i'm playing foosball and drinking budweiser"),
+                    new Post(8, user2,  "i'm playing cod vs wow vs lol and drinking cantilever schnapps")
+                ];
+
+                var topics = [
+                    new Topic(1, user1, "what are you eating right now?"),
+                    new Topic(2, user1, "what are you playing")
+                ];
+
+                var forums = [
+                    new Forum(1, user1, "Everything Else", "Random Stuff Belongs Here. Not Archived.")
+                ];
+                topics[0].posts = ko.observableArray(posts1);
+                topics[1].posts = ko.observableArray(posts2);
+                forums[0].topics = ko.observableArray(topics);
+
+
+                theApp = ViewModel();
+                theApp.forums = ko.observableArray(forums);
+                theApp.user = ko.observable();
+                theApp.CurrentTopic = topics[0]; 
+                ko.applyBindings(theApp);
+            });
+
+            function User(id, name, email) {
+                var self = this;
+                self.id = ko.observable(id);
+                self.name = ko.observable(name);
+                self.email = ko.observable(email);
+                self.updated_at = ko.observable();
+                self.created_at = ko.observable();
+                return self;
+            }
+            function Forum(id, user, title, description) {
+                var self = this;
+                self.id = ko.observable(id);
+                self.user = ko.observable(user);
+                self.title = ko.observable(title);
+                self.description = ko.observable(description);
+                self.topics = ko.observableArray();
+                self.posts = ko.observableArray();
+                return self;
+
+            }
+            function Topic(id, user, title) {
+                var self = this;
+                self.id = ko.observable(id);
+                self.user = ko.observable(user);
+                self.title = ko.observable(title);
+                self.posts = ko.observableArray();
+                return self;
+            }
+            function Post(id, user, body)
+            {
+                var self = this;
+                self.id = ko.observable(id);
+                self.user = ko.observable(user);
+                self.body = ko.observable(body);
+                return self;
+            }
+            function ViewModel() {
+                var self = this;
+                self.forums = ko.observableArray();
+                self.user = ko.observable();
+                self.CurrentTopic = ko.observable();
+                self.onClick = function ()
+                {
+                    alert(this.title() + ' ' + this.description());
+                };
+                
+                return self;
+            }
+            $(document).on('click', '#createpost', function(){
+               console.log($('#newpost').val()); 
+            });
+            $(document).on('click', '#login', function(){
+               console.log($('#email').val()+ " " +$('#password').val());
+               
+               
+               $.ajax({
+                   url: "/login",
+                   type:"post",
+                   data: "_token="+$('#_token').val()+"email="+$('#email').val()+"&password="+$('#password').val(),
+                   success: function(data){
+                       data = JSON.parse(data);
+                       var user = JSON.parse(data["user"]);
+                       theApp.user = ko.mapping.fromJS(user);
+                       console.log(theApp.user);
+                       /*
+                       theApp.user.id(user.id);
+                       theApp.user.name(user.name);
+                       theApp.user.email(user.email);
+                       theApp.user.updated_at = (user.updated_at);
+                       theApp.user.created_at = (user.created_at);
+                       */
+                   }
+                   
+               });
+            });
+        </script>
+
+
+    </body>
+</html>
